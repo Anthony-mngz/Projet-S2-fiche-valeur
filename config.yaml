@@ -1,0 +1,20 @@
+template_path: "input.pptx"
+output_ppt: "Fiche Valeur {ticker}.pptx"
+output_pdf: "Fiche Valeur {ticker}.pdf"
+chart_path: "charts"
+
+# Paramètres SMTP
+smtp_server:   "smtp.gmail.com"
+smtp_port:     465
+smtp_user:     "abc@gmail.com"
+smtp_password: "xxxx xxxx xxxx xxxx"  #il faut créer un "app password" sur son compte google dans la section sécurité, puis remplacer les xxx par le code reçu
+
+# Paramètres email
+email_recipient: "abc@def.ghi"
+email_subject:   "Fiche Valeur {ticker}"
+email_body: |
+  Bonjour,
+
+  Veuillez trouver ci-joint la fiche valeur pour {ticker}.
+  
+  Cordialement.

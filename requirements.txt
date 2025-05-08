@@ -1,0 +1,8 @@
+matplotlib==3.10.1
+comtypes==1.4.10
+pandas==2.2.3
+python-pptx==1.0.2
+yfinance==0.2.59
+typing_extensions==4.13.2
+PyYAML==6.0.2
+logging==0.4.9.6
