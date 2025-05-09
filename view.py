@@ -15,17 +15,20 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-def update_ppt(template_path: str,
-               output_path: str,
-               data: pd.DataFrame,
-               description: str,
-               dictionnaire: dict,
-               ratios: dict,
-               chart_path: str,
-               esg_df: pd.DataFrame,
-               news_items: list[dict],
-               calendar: dict,
-               forecasts: dict):
+
+def update_ppt(
+    template_path: str,
+    output_path: str,
+    data: pd.DataFrame,
+    description: str,
+    info_dict: dict,
+    ratios: dict,
+    chart_path: str,
+    esg_df: pd.DataFrame,
+    news_items: list[dict],
+    calendar: dict,
+    forecasts: dict,
+):
     """Met à jour tous les slides du template PPTX."""
     # Remplace les clés par les valeurs
     prs = Presentation(template_path)
@@ -35,7 +38,7 @@ def update_ppt(template_path: str,
     for slide in prs.slides:
         for shape in slide.shapes:
             if shape.has_text_frame:
-                for key, value in dictionnaire.items():
+                for key, value in info_dict.items():
                     if key in shape.text:
                         shape.text = shape.text.replace(key, str(value))
                         if key == "shortName":
@@ -43,8 +46,9 @@ def update_ppt(template_path: str,
                             for paragraph in text_frame.paragraphs:
                                 paragraph.alignment = PP_ALIGN.CENTER  # Centre le texte
                                 for run in paragraph.runs:
-                                    run.font.color.rgb = RGBColor(255, 255, 255)  # Change la couleur en blanc
-
+                                    run.font.color.rgb = RGBColor(
+                                        255, 255, 255
+                                    )  # Change la couleur en blanc
 
     logger.info("Remplissage de la slide 1 (Infos & Financials)")
     # Slide 1: Infos & Financials
@@ -69,8 +73,9 @@ def update_ppt(template_path: str,
                         run.font.size = Pt(9)
 
     if chart_path:
-        slide.shapes.add_picture(chart_path, Inches(-0.4), Inches(0.7), width=Inches(7.7),
-                                 height=Inches(3.9))
+        slide.shapes.add_picture(
+            chart_path, Inches(-0.4), Inches(0.7), width=Inches(7.7), height=Inches(3.9)
+        )
 
     for shape in slide.shapes:
         if shape.has_table:
@@ -78,20 +83,29 @@ def update_ppt(template_path: str,
 
             # Safe conversion for "Total Revenue"
             try:
-                revenue_n1 = int(data.loc["Total Revenue", "N"] / 1000) if pd.notna(
-                    data.loc["Total Revenue", "N"]) else "N/A"
+                revenue_n1 = (
+                    int(data.loc["Total Revenue", "N"] / 1000)
+                    if pd.notna(data.loc["Total Revenue", "N"])
+                    else "N/A"
+                )
             except KeyError:
                 revenue_n1 = "N/A"
 
             try:
-                revenue_n2 = int(data.loc["Total Revenue", "N-1"] / 1000) if pd.notna(
-                    data.loc["Total Revenue", "N-1"]) else "N/A"
+                revenue_n2 = (
+                    int(data.loc["Total Revenue", "N-1"] / 1000)
+                    if pd.notna(data.loc["Total Revenue", "N-1"])
+                    else "N/A"
+                )
             except KeyError:
                 revenue_n2 = "N/A"
 
             try:
-                revenue_n3 = int(data.loc["Total Revenue", "N-2"] / 1000) if pd.notna(
-                    data.loc["Total Revenue", "N-2"]) else "N/A"
+                revenue_n3 = (
+                    int(data.loc["Total Revenue", "N-2"] / 1000)
+                    if pd.notna(data.loc["Total Revenue", "N-2"])
+                    else "N/A"
+                )
             except KeyError:
                 revenue_n3 = "N/A"
 
@@ -101,17 +115,29 @@ def update_ppt(template_path: str,
 
             # Safe conversion for "EBITDA"
             try:
-                ebitda_n1 = int(data.loc["EBITDA", "N-1"] / 1000) if pd.notna(data.loc["EBITDA", "N-1"]) else "N/A"
+                ebitda_n1 = (
+                    int(data.loc["EBITDA", "N-1"] / 1000)
+                    if pd.notna(data.loc["EBITDA", "N-1"])
+                    else "N/A"
+                )
             except KeyError:
                 ebitda_n1 = "N/A"
 
             try:
-                ebitda_n2 = int(data.loc["EBITDA", "N-2"] / 1000) if pd.notna(data.loc["EBITDA", "N-2"]) else "N/A"
+                ebitda_n2 = (
+                    int(data.loc["EBITDA", "N-2"] / 1000)
+                    if pd.notna(data.loc["EBITDA", "N-2"])
+                    else "N/A"
+                )
             except KeyError:
                 ebitda_n2 = "N/A"
 
             try:
-                ebitda_n3 = int(data.loc["EBITDA", "N-3"] / 1000) if pd.notna(data.loc["EBITDA", "N-3"]) else "N/A"
+                ebitda_n3 = (
+                    int(data.loc["EBITDA", "N-3"] / 1000)
+                    if pd.notna(data.loc["EBITDA", "N-3"])
+                    else "N/A"
+                )
             except KeyError:
                 ebitda_n3 = "N/A"
 
@@ -121,17 +147,29 @@ def update_ppt(template_path: str,
 
             # Safe conversion for "EBIT"
             try:
-                ebit_n1 = int(data.loc["EBIT", "N-1"] / 1000) if pd.notna(data.loc["EBIT", "N-1"]) else "N/A"
+                ebit_n1 = (
+                    int(data.loc["EBIT", "N-1"] / 1000)
+                    if pd.notna(data.loc["EBIT", "N-1"])
+                    else "N/A"
+                )
             except KeyError:
                 ebit_n1 = "N/A"
 
             try:
-                ebit_n2 = int(data.loc["EBIT", "N-2"] / 1000) if pd.notna(data.loc["EBIT", "N-2"]) else "N/A"
+                ebit_n2 = (
+                    int(data.loc["EBIT", "N-2"] / 1000)
+                    if pd.notna(data.loc["EBIT", "N-2"])
+                    else "N/A"
+                )
             except KeyError:
                 ebit_n2 = "N/A"
 
             try:
-                ebit_n3 = int(data.loc["EBIT", "N-3"] / 1000) if pd.notna(data.loc["EBIT", "N-3"]) else "N/A"
+                ebit_n3 = (
+                    int(data.loc["EBIT", "N-3"] / 1000)
+                    if pd.notna(data.loc["EBIT", "N-3"])
+                    else "N/A"
+                )
             except KeyError:
                 ebit_n3 = "N/A"
 
@@ -161,36 +199,58 @@ def update_ppt(template_path: str,
             except KeyError:
                 debt_on_ebitda_n3 = "N/A"
 
-            table.cell(4, 1).text = f"{debt_on_ebitda_n1:,}x" if debt_on_ebitda_n1 != "N/A" else "N/A"
-            table.cell(4, 2).text = f"{debt_on_ebitda_n2:,}x" if debt_on_ebitda_n2 != "N/A" else "N/A"
-            table.cell(4, 3).text = f"{debt_on_ebitda_n3:,}x" if debt_on_ebitda_n3 != "N/A" else "N/A"
+            table.cell(4, 1).text = (
+                f"{debt_on_ebitda_n1:,}x" if debt_on_ebitda_n1 != "N/A" else "N/A"
+            )
+            table.cell(4, 2).text = (
+                f"{debt_on_ebitda_n2:,}x" if debt_on_ebitda_n2 != "N/A" else "N/A"
+            )
+            table.cell(4, 3).text = (
+                f"{debt_on_ebitda_n3:,}x" if debt_on_ebitda_n3 != "N/A" else "N/A"
+            )
 
             # Safe conversion for "EPS"
             try:
-                diluted_eps_n1 = float(data.loc["Diluted EPS", "N-1"]) if pd.notna(
-                    data.loc["Diluted EPS", "N-1"]) else "N/A"
+                diluted_eps_n1 = (
+                    float(data.loc["Diluted EPS", "N-1"])
+                    if pd.notna(data.loc["Diluted EPS", "N-1"])
+                    else "N/A"
+                )
             except KeyError:
                 diluted_eps_n1 = "N/A"
 
             try:
-                diluted_eps_n2 = float(data.loc["Diluted EPS", "N-2"]) if pd.notna(
-                    data.loc["Diluted EPS", "N-2"]) else "N/A"
+                diluted_eps_n2 = (
+                    float(data.loc["Diluted EPS", "N-2"])
+                    if pd.notna(data.loc["Diluted EPS", "N-2"])
+                    else "N/A"
+                )
             except KeyError:
                 diluted_eps_n2 = "N/A"
 
             try:
-                diluted_eps_n3 = round(float(data.loc["Diluted EPS", "N-3"]), 2) if pd.notna(
-                    data.loc["Diluted EPS", "N-3"]) else "N/A"
+                diluted_eps_n3 = (
+                    round(float(data.loc["Diluted EPS", "N-3"]), 2)
+                    if pd.notna(data.loc["Diluted EPS", "N-3"])
+                    else "N/A"
+                )
             except KeyError:
                 diluted_eps_n3 = "N/A"
 
-            table.cell(5, 1).text = f"{diluted_eps_n1:,}" if diluted_eps_n1 != "N/A" else "N/A"
-            table.cell(5, 2).text = f"{diluted_eps_n2:,}" if diluted_eps_n2 != "N/A" else "N/A"
-            table.cell(5, 3).text = f"{diluted_eps_n3:,}" if diluted_eps_n3 != "N/A" else "N/A"
+            table.cell(5, 1).text = (
+                f"{diluted_eps_n1:,}" if diluted_eps_n1 != "N/A" else "N/A"
+            )
+            table.cell(5, 2).text = (
+                f"{diluted_eps_n2:,}" if diluted_eps_n2 != "N/A" else "N/A"
+            )
+            table.cell(5, 3).text = (
+                f"{diluted_eps_n3:,}" if diluted_eps_n3 != "N/A" else "N/A"
+            )
 
     logger.info("Remplissage de la slide 2 (ESG + News)")
     # Slide 2: ESG + News
     slide = prs.slides[1]
+
     # Formattage ESG
     def fmt_esg(index_name: str) -> str:
         try:
@@ -198,15 +258,17 @@ def update_ppt(template_path: str,
         except (KeyError, AttributeError):
             return "N/A"
         if isinstance(raw, (list, tuple)):
-            sep = "\n" if index_name == "relatedControversy" else " / "   #Cela devait servir à séparer les controverses mais j'ai essayé plusieurs méthodes sans y arriver
+            sep = (
+                "\n" if index_name == "relatedControversy" else " / "
+            )  # Cela devait servir à séparer les controverses mais j'ai essayé plusieurs méthodes sans y arriver
             return sep.join(str(x) for x in raw)
         return str(raw)
 
-    total_esg   = fmt_esg("totalEsg")
-    month       = fmt_esg("ratingMonth")
-    year        = fmt_esg("ratingYear")
+    total_esg = fmt_esg("totalEsg")
+    month = fmt_esg("ratingMonth")
+    year = fmt_esg("ratingYear")
     controversy = fmt_esg("highestControversy")
-    related     = fmt_esg("relatedControversy")
+    related = fmt_esg("relatedControversy")
 
     for shape in slide.shapes:
         if not shape.has_text_frame:
@@ -248,10 +310,9 @@ def update_ppt(template_path: str,
                         dt = datetime.fromtimestamp(item.get("providerPublishTime"))
                     except Exception:
                         dt = None
-                date_str = dt.strftime('%Y-%m-%d') if hasattr(dt, 'strftime') else ''
+                date_str = dt.strftime("%Y-%m-%d") if hasattr(dt, "strftime") else ""
                 para.text = f"{date_str} - {title}"
                 para.level = 0
-
 
     logger.info("Remplissage de la slide 3 (Consensus, Calendar, Upside/Downside)")
     # Slide 3: Economic Calendar, Price Consensus, Upside/Downside
@@ -260,14 +321,14 @@ def update_ppt(template_path: str,
         if shape.has_text_frame:
             tf = shape.text_frame
             # Price Consensus
-            if 'price_consensus' in tf.text.lower():
-                mn = forecasts.get('target_mean_price', 'N/A')
-                lo = forecasts.get('target_low_price', 'N/A')
-                hi = forecasts.get('target_high_price', 'N/A')
-                rk = forecasts.get('recommendation_key', '')
+            if "price_consensus" in tf.text.lower():
+                mn = forecasts.get("target_mean_price", "N/A")
+                lo = forecasts.get("target_low_price", "N/A")
+                hi = forecasts.get("target_high_price", "N/A")
+                rk = forecasts.get("recommendation_key", "")
                 tf.text = f"low {lo}, mean {mn}, high {hi}"
-            if 'reco_key' in tf.text.lower():
-                rk = forecasts.get('recommendation_key', '')
+            if "reco_key" in tf.text.lower():
+                rk = forecasts.get("recommendation_key", "")
                 tf.text = rk
                 for paragraph in tf.paragraphs:
                     for run in paragraph.runs:
@@ -297,14 +358,14 @@ def update_ppt(template_path: str,
                     shape.text = date_str
 
     # Upside/Downside
-    cp = dictionnaire.get('previousClose') or None
-    if not cp and 'N' in data.columns:
-        cp = data['N'].iloc[-1]
+    cp = info_dict.get("previousClose") or None
+    if not cp and "N" in data.columns:
+        cp = data["N"].iloc[-1]
     up = None
-    if cp and forecasts.get('target_mean_price'):
-        up = round((forecasts['target_mean_price']/cp - 1)*100, 2)
+    if cp and forecasts.get("target_mean_price"):
+        up = round((forecasts["target_mean_price"] / cp - 1) * 100, 2)
     for shape in slide.shapes:
-        if shape.has_text_frame and 'upside_downside' in shape.text.lower():
+        if shape.has_text_frame and "upside_downside" in shape.text.lower():
             shape.text = f"{up}%" if up is not None else "N/A"
             for paragraph in shape.text_frame.paragraphs:
                 for run in paragraph.runs:
@@ -313,11 +374,13 @@ def update_ppt(template_path: str,
     logger.info("Enregistrement du PPT mis à jour dans %s", output_path)
     prs.save(output_path)
 
+
 def convert_ppt_to_pdf(ppt_path: str, pdf_path: str):
     """Convertit un fichier PowerPoint en PDF via COM."""
     logger.info("Conversion PPTX en PDF : %s → %s", ppt_path, pdf_path)
-    try :
+    try:
         import comtypes.client
+
         try:
             ppt_app = comtypes.client.CreateObject("PowerPoint.Application")
             ppt_app.Visible = True
@@ -331,6 +394,7 @@ def convert_ppt_to_pdf(ppt_path: str, pdf_path: str):
     except Exception as e:
         logger.error("Erreur conversion PPT→PDF: %s", e)
         raise
+
 
 def display_pdf(pdf_path: str):
     """
@@ -350,20 +414,21 @@ def display_pdf(pdf_path: str):
     except Exception as e:
         logger.error(f"Impossible d'ouvrir le PDF : {e}")
 
+
 def send_report_via_email(pdf_path: str, cfg: dict, ticker):
     """
     Envoie le PDF en pièce jointe via SMTP (smtplib).
     Lit les paramètres (serveur, port, user/pwd, destinataire, sujet, corps) depuis le dict cfg.
     """
     # Prépare le message
-    subject   = cfg["email_subject"].format(ticker=ticker)
-    body      = cfg["email_body"].format(ticker=ticker)
+    subject = cfg["email_subject"].format(ticker=ticker)
+    body = cfg["email_body"].format(ticker=ticker)
     recipient = cfg["email_recipient"]
 
     msg = EmailMessage()
     msg["Subject"] = subject
-    msg["From"]    = cfg["smtp_user"]
-    msg["To"]      = recipient
+    msg["From"] = cfg["smtp_user"]
+    msg["To"] = recipient
     msg.set_content(body)
 
     # Ajoute le PDF en pièce jointe
@@ -373,17 +438,14 @@ def send_report_via_email(pdf_path: str, cfg: dict, ticker):
     with pdf_file.open("rb") as f:
         data = f.read()
     msg.add_attachment(
-        data,
-        maintype="application",
-        subtype="pdf",
-        filename=pdf_file.name
+        data, maintype="application", subtype="pdf", filename=pdf_file.name
     )
 
     # Envoi via SMTP_SSL
     server = cfg["smtp_server"]
-    port   = cfg["smtp_port"]
-    user   = cfg["smtp_user"]
-    pwd    = cfg["smtp_password"]
+    port = cfg["smtp_port"]
+    user = cfg["smtp_user"]
+    pwd = cfg["smtp_password"]
 
     logger.info(f"Envoi de l'email à {recipient} via {server}:{port}")
     with smtplib.SMTP_SSL(server, port) as smtp:

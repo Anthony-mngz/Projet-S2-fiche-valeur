@@ -22,6 +22,7 @@ def plot_stock_chart(history, stock):
         print(f"Error generating stock chart for {stock}: {e}")
         return None
 
+
 def calculate_cagr(history, years):
     """
     Calculate Compound Annual Growth Rate (CAGR) over given years.
@@ -36,17 +37,21 @@ def calculate_cagr(history, years):
         if not isinstance(history.index, pd.DatetimeIndex):
             history.index = pd.to_datetime(history.index)
 
-        annual_prices = history["Close"].resample('YE').last()
+        annual_prices = history["Close"].resample("YE").last()
 
         if len(annual_prices) < years + 1:
-            raise ValueError(f"Pas assez de données pour calculer le CAGR sur {years} années.")
+            raise ValueError(
+                f"Pas assez de données pour calculer le CAGR sur {years} années."
+            )
 
         # Calcul du CAGR
         start_price = annual_prices.iloc[-(years + 2)]
         end_price = annual_prices.iloc[-2]
 
         if start_price <= 0 or end_price <= 0:
-            raise ValueError("Les prix de début ou de fin sont invalides pour le calcul du CAGR.")
+            raise ValueError(
+                "Les prix de début ou de fin sont invalides pour le calcul du CAGR."
+            )
 
         cagr = ((end_price / start_price) ** (1 / years)) - 1
         return round(cagr * 100, 2)
@@ -54,10 +59,11 @@ def calculate_cagr(history, years):
         print(f"Erreur lors du calcul du CAGR : {e}")
         return None
 
+
 def calculate_ratios(history: pd.DataFrame) -> dict:
     """Calculate key financial ratios: overall, 5-year, 3-year CAGR."""
     try:
-        years_data = len(history.resample('YE').last()) - 2
+        years_data = len(history.resample("YE").last()) - 2
         overall = calculate_cagr(history, years_data)
         five_y = calculate_cagr(history, 4)
         three_y = calculate_cagr(history, 2)
@@ -65,7 +71,7 @@ def calculate_ratios(history: pd.DataFrame) -> dict:
         return {
             "overall": f"{overall:.2f}%",
             "5y": f"{five_y:.2f}%",
-            "3y": f"{three_y:.2f}%"
+            "3y": f"{three_y:.2f}%",
         }
     except Exception as e:
         print(f"Error calculating financial ratios: {e}")

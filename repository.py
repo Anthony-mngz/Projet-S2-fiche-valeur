@@ -9,9 +9,13 @@ logger = logging.getLogger(__name__)
 def get_data(ticker: str):
     stock = yf.Ticker(ticker)
     info = stock.info
-    info["dividendYield"] = (info.get('dividendYield') if isinstance(info.get("dividendYield"), (int, float)) else "NA")
-    info["marketCap"] = round(info.get('marketCap', 0) / 1000000)
-    info["beta"] = round(info.get('beta', 0), 2)
+    info["dividendYield"] = (
+        info.get("dividendYield")
+        if isinstance(info.get("dividendYield"), (int, float))
+        else "NA"
+    )
+    info["marketCap"] = round(info.get("marketCap", 0) / 1000000)
+    info["beta"] = round(info.get("beta", 0), 2)
     description = info.get("longBusinessSummary", "")
 
     financials = stock.financials
@@ -44,8 +48,8 @@ def fetch_news(ticker: str) -> list[dict]:
     try:
         items = yf.Ticker(ticker).news
         for it in items:
-            if 'providerPublishTime' in it:
-                it['datetime'] = datetime.fromtimestamp(it['providerPublishTime'])
+            if "providerPublishTime" in it:
+                it["datetime"] = datetime.fromtimestamp(it["providerPublishTime"])
         logger.info(f"Fetched {len(items)} news items for {ticker}")
         return items
     except Exception as e:
